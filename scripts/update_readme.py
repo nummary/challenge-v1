@@ -8,7 +8,7 @@ delta = deadline - now
 days = delta.days
 hours = delta.seconds // 3600
 
-text = f"{days} days {hours} hours **left**"
+text = f"{days} days {hours} hours left"
 
 with open("README.md", "r", encoding="utf-8") as f:
     readme = f.read()
