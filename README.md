@@ -1,2 +1,19 @@
-# challenge-v1
-Official repository for the first Avantura Challenge. Rules, progress, and final submissions.
+# AVANTURA Challenge #1
+
+Первый официальный челлендж AVANTURA.
+
+## Участники
+
+🎮 Clone  
+Цель: создать игру с хронометражем 30+ минут.
+
+🌐 Nummary  
+Цель: создать первую версию сайта Avantura.
+
+## Дедлайн
+
+31 августа 2026 12:00 AM
+
+## Ставка
+
+Проигравший знакомиться с незнакомой девушкой на улице и идет с ней на свидание.
