@@ -13,7 +13,7 @@
 31 августа 2026 12:00 AM
 
 <!--COUNTDOWN_START-->
-29 days 18 hours left
+29 days 16 hours left
 <!--COUNTDOWN_END-->
 
 ## Ставка
