@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<style>
+	    body {
+	        display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            flex-direction: column;
+            gap: 2px;
+        }
+        
+        p {
+            margin: 0;
+
+	    }
+	</style>
+	<title>AVANTURA</title>
+</head>
+<body>
+    <h1>Вход</h1>
+    <form action="/login.php" method="POST">
+        <h2>Введите юзернейм</h2>
+        <input type="text" name="username" placeholder="username" required="true">
+        <h2>Введите пароль</h2>
+        <input type="password" name="password" placeholder="password" required="true">
+        <h1></h1>
+        <a href="/pass_recovery.html">Забыли пароль?</a>
+        <h1></h1>
+        <label>
+            <input type="checkbox" name="remember" value="1">
+            Запомнить меня
+        </label>
+        <h1></h1>
+        <button type="submit">Войти</button>
+    </form>
+</body>
+</html>
