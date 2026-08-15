@@ -1,7 +1,7 @@
 # 💻 AVANTURA Forum
 
 ## Разработчик: Nummary
-### Сайт: avantura.su
+> Сайт: avantura.su
 
 **👤 Пользователи**
 - Регистрация
