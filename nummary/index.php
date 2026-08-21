@@ -28,8 +28,15 @@ session_start();
         foreach ($razdely as $row) {
             $now = $row['sid'];
             ?>
-            <a href='/section.php?id=<?php echo $row['sid'] ?>'><?php echo $row['name'] . "</br>"?></a>
+            <h1><?php echo $row['name'] . "</br>"?></h1>
             <?php
+            foreach ($podrazdely as $rowy) {
+                if ($rowy['parent_id'] == $now) {
+                    ?>
+                    <h2><a href='/section.php?id=<?php echo $rowy['sid'] ?>'><?php echo $rowy['name'] . "</br>"?></a></h2>
+                    <?php
+                }
+            }
         }
         ?>
         
