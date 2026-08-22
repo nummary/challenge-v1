@@ -11,12 +11,12 @@ if (isset($_SESSION['uid'])):
         $section_id = 1; // Значение по умолчанию, если id не передан
     } 
 
-    $parentid_stmt = $pdo->prepare("SELECT `parent_id` FROM `sections` WHERE `sid` = :id");
+    $parentid_stmt = $pdo->prepare("SELECT `name`, `parent_id` FROM `sections` WHERE `sid` = :id");
     $parentid_stmt->execute(['id' => $section_id]);
-    $parent_id = $parentid_stmt->fetchColumn();
+    $parent_stmt = $parentid_stmt->fetch(PDO::FETCH_ASSOC);
 
     $section_name_stmt = $pdo->prepare("SELECT `name` FROM `sections` WHERE `sid` = :pid");
-    $section_name_stmt->execute(['pid' => $parent_id]);
+    $section_name_stmt->execute(['pid' => $parent_stmt['parent_id']]);
     $section_name = $section_name_stmt->fetchColumn();
 
     $stmt = $pdo->query("SELECT 
@@ -56,7 +56,7 @@ endif;
 <body>
 
     <h1>Форум</h1>
-    <h2><?php echo $section_name ?></h2>
+    <h2><?php echo $section_name . "  ---  " . $parent_stmt['name'] ?></h2>
 
     <p>Привет, <b><?= htmlspecialchars($_SESSION['username']) ?></b>!</p>
 
