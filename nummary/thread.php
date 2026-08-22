@@ -16,6 +16,10 @@ $stmt = $pdo->prepare("
 $stmt->execute(['tid' => $thread_id]);
 $thread = $stmt->fetch(PDO::FETCH_ASSOC);
 
+$section_id_stmt = $pdo->prepare("SELECT `sid` FROM `threads` WHERE `tid` = :tid");
+$section_id_stmt->execute(['tid' => $thread_id]);
+$section_id = $section_id_stmt->fetchColumn();
+
 if (!$thread) {
     die("Тема не существует!");
 }
@@ -107,7 +111,7 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
 
     <?php if (isset($_SESSION['uid'])): ?>
 
-        <a href="index.php">Главная</a> | <a href="javascript:history.back()">Назад</a>
+        <a href="index.php">Главная</a> | <a href="section.php?id=<?= $section_id ?>">Назад</a>
         <hr>
 
         <!-- Заголовок темы -->
