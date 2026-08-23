@@ -2,103 +2,112 @@
 session_start();
 require_once "db.php";
 
-if (!isset($_GET['id'])) {
-    die("Тема не найдена!");
-}
-$thread_id = (int)$_GET['id'];
+if (isset($_SESSION['uid'])) {
 
-$stmt = $pdo->prepare("
-    SELECT t.`tid`, t.`name`, t.`created_dt`, u.`username` AS `author_name`
-    FROM `threads` t
-    LEFT JOIN `users` u ON t.`uid` = u.`uid`
-    WHERE t.`tid` = :tid
-");
-$stmt->execute(['tid' => $thread_id]);
-$thread = $stmt->fetch(PDO::FETCH_ASSOC);
+    if (!isset($_GET['id'])) {
+        die("Тема не найдена!");
+    }
+    $thread_id = (int)$_GET['id'];
 
-$section_id_stmt = $pdo->prepare("SELECT `sid` FROM `threads` WHERE `tid` = :tid");
-$section_id_stmt->execute(['tid' => $thread_id]);
-$section_id = $section_id_stmt->fetchColumn();
+    $stmt = $pdo->prepare("
+        SELECT t.`tid`, t.`name`, t.`created_dt`, u.`username` AS `author_name`
+        FROM `threads` t
+        LEFT JOIN `users` u ON t.`uid` = u.`uid`
+        WHERE t.`tid` = :tid
+    ");
+    $stmt->execute(['tid' => $thread_id]);
+    $thread = $stmt->fetch(PDO::FETCH_ASSOC);
 
-if (!$thread) {
-    die("Тема не существует!");
-}
+    $section_id_stmt = $pdo->prepare("SELECT `sid` FROM `threads` WHERE `tid` = :tid");
+    $section_id_stmt->execute(['tid' => $thread_id]);
+    $section_id = $section_id_stmt->fetchColumn();
 
-$page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
-if ($page < 1) $page = 1;
+    if (!$thread) {
+        die("Тема не существует!");
+    }
 
-$limit = 10;
-$offset = ($page - 1) * $limit;
+    $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+    if ($page < 1) $page = 1;
 
-$count_stmt = $pdo->prepare("SELECT COUNT(*) FROM `comments` WHERE `tid` = :tid");
-$count_stmt->execute(['tid' => $thread_id]);
-$total_comments = $count_stmt->fetchColumn();
+    $limit = 10;
+    $offset = ($page - 1) * $limit;
 
-$total_pages = ceil($total_comments / $limit);
+    $count_stmt = $pdo->prepare("SELECT COUNT(*) FROM `comments` WHERE `tid` = :tid");
+    $count_stmt->execute(['tid' => $thread_id]);
+    $total_comments = $count_stmt->fetchColumn();
 
-$comments_stmt = $pdo->prepare("
-    SELECT 
-        c.`cid`, 
-        c.`text`, 
-        c.`created_dt`, 
-        u.`username` AS `commenter_name`,
-        GROUP_CONCAT(CONCAT(ci.`path`, '::', COALESCE(ci.`original_name`, 'Файл')) SEPARATOR '||') AS `files_data`
-    FROM `comments` c
-    LEFT JOIN `users` u ON c.`uid` = u.`uid`
-    LEFT JOIN `comment_images` ci ON c.`cid` = ci.`cid`
-    WHERE c.`tid` = :tid
-    GROUP BY c.`cid`
-    ORDER BY c.`cid` ASC
-    LIMIT :limit OFFSET :offset
-");
-$comments_stmt->bindValue(':tid', $thread_id, PDO::PARAM_INT);
-$comments_stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
-$comments_stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
-$comments_stmt->execute();
+    $total_pages = ceil($total_comments / $limit);
 
-$comments = $comments_stmt->fetchAll(PDO::FETCH_ASSOC);
+    $comments_stmt = $pdo->prepare("
+        SELECT 
+            c.`cid`, 
+            c.`text`, 
+            c.`created_dt`, 
+            u.`username` AS `commenter_name`,
+            GROUP_CONCAT(CONCAT(ci.`path`, '::', COALESCE(ci.`original_name`, 'Файл')) SEPARATOR '||') AS `files_data`
+        FROM `comments` c
+        LEFT JOIN `users` u ON c.`uid` = u.`uid`
+        LEFT JOIN `comment_images` ci ON c.`cid` = ci.`cid`
+        WHERE c.`tid` = :tid
+        GROUP BY c.`cid`
+        ORDER BY c.`cid` ASC
+        LIMIT :limit OFFSET :offset
+    ");
+    $comments_stmt->bindValue(':tid', $thread_id, PDO::PARAM_INT);
+    $comments_stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
+    $comments_stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
+    $comments_stmt->execute();
 
-if ($_SERVER['REQUEST_METHOD'] === "POST") {
-    $comment_text = $_POST['comment_text'];
+    $comments = $comments_stmt->fetchAll(PDO::FETCH_ASSOC);
 
-    $comment_text_stmt = $pdo->prepare("
-        INSERT INTO `comments` (`cid`, `tid`, `uid`, `text`, `created_dt`) VALUES (NULL, :tid, :uid, :comment_text, CURRENT_TIMESTAMP)
-        ");
-    $comment_text_stmt->execute([
-        'tid' => $thread_id,
-        'uid' => $_SESSION['uid'],
-        'comment_text' => $comment_text
-        ]);
-    $last_comment_id = $pdo->lastInsertId();
+    if ($_SERVER['REQUEST_METHOD'] === "POST") {
+        $comment_text = $_POST['comment_text'];
 
-    if (!empty($_FILES['comment_images']['name'][0])) {
-        $uploadDir = 'uploads/comments/';
+        $comment_text_stmt = $pdo->prepare("
+            INSERT INTO `comments` (`cid`, `tid`, `uid`, `text`, `created_dt`) VALUES (NULL, :tid, :uid, :comment_text, CURRENT_TIMESTAMP)
+            ");
+        $comment_text_stmt->execute([
+            'tid' => $thread_id,
+            'uid' => $_SESSION['uid'],
+            'comment_text' => $comment_text
+            ]);
+        $last_comment_id = $pdo->lastInsertId();
 
-        $imgStmt = $pdo->prepare("INSERT INTO `comment_images` (`cid`, `path`, `original_name`) VALUES (:cid, :path, :orig_name)");
+        if (!empty($_FILES['comment_images']['name'][0])) {
+            $uploadDir = 'uploads/comments/';
 
-        foreach ($_FILES['comment_images']['tmp_name'] as $key => $tmpName) {
-            if ($_FILES['comment_images']['error'][$key] === UPLOAD_ERR_OK) {
-                $fileName = $_FILES['comment_images']['name'][$key];
-                $originalName = $_FILES['comment_images']['name'][$key];
-                $ext = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
+            $imgStmt = $pdo->prepare("INSERT INTO `comment_images` (`cid`, `path`, `original_name`) VALUES (:cid, :path, :orig_name)");
 
-                $newName = uniqid('file_', true) . '.' . $ext;
-                $destination = $uploadDir . $newName;
+            foreach ($_FILES['comment_images']['tmp_name'] as $key => $tmpName) {
+                if ($_FILES['comment_images']['error'][$key] === UPLOAD_ERR_OK) {
+                    $fileName = $_FILES['comment_images']['name'][$key];
+                    $originalName = $_FILES['comment_images']['name'][$key];
+                    $ext = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
 
-                if (move_uploaded_file($tmpName, $destination)) {
-                    $imgStmt->execute([
-                        'cid'  => $last_comment_id,
-                        'path' => $destination,
-                        'orig_name' => $originalName
-                    ]);
+                    $newName = uniqid('file_', true) . '.' . $ext;
+                    $destination = $uploadDir . $newName;
+
+                    if (move_uploaded_file($tmpName, $destination)) {
+                        $imgStmt->execute([
+                            'cid'  => $last_comment_id,
+                            'path' => $destination,
+                            'orig_name' => $originalName
+                        ]);
+                    }
                 }
             }
+            header("Location: thread.php?id={$thread_id}&page={$total_pages}");
+            exit;
         }
         header("Location: thread.php?id={$thread_id}&page={$total_pages}");
         exit;
     }
-    header("Location: thread.php?id={$thread_id}&page={$total_pages}");
+
+} else {
+
+    header("Location: index.php");
     exit;
+    
 } ?>
 
 <!DOCTYPE html>
@@ -113,6 +122,15 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
 
         <a href="index.php">Главная</a> | <a href="section.php?id=<?= $section_id ?>">Назад</a>
         <hr>
+
+        <!-- Кнопки управления темой (вверху страницы) -->
+        <?php if (isset($_SESSION['role']) && in_array($_SESSION['role'], ['mod', 'admin'])): ?>
+            <div style="background: #ffebe8; padding: 10px; margin-bottom: 15px;">
+                <b>Панель модератора:</b>
+                <a href="action_thread.php?action=pin&id=<?= $thread_id ?>">[📌 Закрепить / Открепить]</a>
+                <a href="action_thread.php?action=delete&id=<?= $thread_id ?>" onclick="return confirm('Удалить тему?')">[❌ Удалить тему]</a>
+            </div>
+        <?php endif; ?>
 
         <!-- Заголовок темы -->
         <h1><?= htmlspecialchars($thread['name']) ?></h1>
@@ -201,11 +219,10 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
             <button type="submit" name="send_comment">Отправить ответ</button>
         </form>
 
-    <?php else: ?>
+    <?php else:
 
-        <a href="register.html"><button>Регистрация</button></a><br>
-        <a href="login.html"><button>Войти</button></a><br>
+        header("Location: index.php");
 
-    <?php endif; ?>
+    endif; ?>
 </body>
 </html>
