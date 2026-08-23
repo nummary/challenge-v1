@@ -2,6 +2,7 @@
 session_start();
 
 if (isset($_SESSION['uid'])):
+
     require_once "db.php";
         
     if (isset($_GET['id'])) {
@@ -35,17 +36,16 @@ if (isset($_SESSION['uid'])):
         )
         LEFT JOIN `users` u_last ON c_last.`uid` = u_last.`uid`
         WHERE t.`sid` = $section_id
-        GROUP BY t.`tid`");
+        GROUP BY t.`tid`
+        ORDER BY t.is_pinned DESC, t.tid DESC");
     $thrds = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 else:
-    ?>
-    <a href="register.html"><button>Регистрация</button></a><br>
-    <a href="login.html"><button>Войти</button></a>
-    <?php
-endif;
 
-?>
+    header("Location: index.php");
+    exit();
+
+endif; ?>
 
 <!DOCTYPE html>
 <html lang="ru">
@@ -76,16 +76,6 @@ endif;
     }
     echo '</br>';
     ?>
-
-    <form action="logout.php" method="POST">
-        <button type="submit">Выйти</button>
-    </form>
-    <form action="index.php" method="POST">
-        <button type="submit">На главную</button>
-    </form>
-        
-
-
 
 </body>
 </html>
