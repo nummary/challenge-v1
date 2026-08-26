@@ -103,6 +103,9 @@ if (isset($_SESSION['uid'])) {
         exit;
     }
 
+
+    
+
 } else {
 
     header("Location: index.php");
@@ -160,11 +163,37 @@ if (isset($_SESSION['uid'])) {
             <?php foreach ($comments as $index => $comment): ?>
                 <div style="border: 1px solid #ccc; padding: 10px; margin-bottom: 10px;">
                     <p>
-                        <b><?= htmlspecialchars($comment['commenter_name'] ?? 'Удаленный пользователь') ?></b> 
+                        <b><?= htmlspecialchars($index + 1 . ' --- ' . $comment['cid'] . ' --- ' . $comment['commenter_name']) ?></b> 
                         <small>(<?= $comment['created_dt'] ?>)</small>
                     </p>
                     <div>
                         <?= nl2br(htmlspecialchars($comment['text'])) ?>
+                    </div>
+
+                    <div>
+                        <?php
+                        $all_votes = ['127827','128514','127876','128169','129505','128077','128078'];
+
+                        $reactions_stmt = $pdo->prepare("
+                            SELECT `vote`, COUNT(*) AS `total`
+                            FROM `reactions`
+                            WHERE `cid` = :cid
+                            GROUP BY `vote`
+                        ");
+                        $reactions_stmt->execute(['cid' => $comment['cid']]);
+                        $counts = $reactions_stmt->fetchAll(PDO::FETCH_KEY_PAIR);
+
+                        foreach ($all_votes as $vote_code) {
+                            $total = isset($counts[$vote_code]) ? $counts[$vote_code] : 0;
+                            
+                            echo '<span style="margin-right: 8px;">';
+                            echo '[';
+                            echo '<a href="reaction.php?cid=' . $comment['cid'] . '&vote=' . urlencode($vote_code) . '">&#' . $vote_code . '</a>';
+                            echo ' | ' . $total;
+                            echo ']';
+                            echo '</span>';
+                        }
+                        ?>
                     </div>
 
                     <?php if (!empty($comment['files_data'])): ?>
@@ -190,6 +219,8 @@ if (isset($_SESSION['uid'])) {
                                         </a>
                                     </div>
                                 <?php endif; ?>
+
+
 
                             <?php endforeach; ?>
                         </div>
