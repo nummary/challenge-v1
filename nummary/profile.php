@@ -29,6 +29,10 @@ if (isset($_SESSION['uid'])) {
 		]);
 		$info = $info_stmt->fetch(PDO::FETCH_ASSOC);
 
+		$reacts_stmt = $pdo->prepare("SELECT COUNT(`vote`) AS `react_count` FROM `reactions` WHERE `uid` = :uid");
+		$reacts_stmt->execute(['uid' => $info['uid']]);
+		$reactions = $reacts_stmt->fetch(PDO::FETCH_ASSOC);
+
 		if (!$info) {
 		    echo "Пользователь не найден!";
 		    echo '<br><a href="javascript:history.back()"><button>Назад</button></a>';
@@ -68,6 +72,7 @@ if (isset($_SESSION['uid'])) {
             <b><?= 'Дата регистрации: ' . htmlspecialchars($info['created_date']) . '</br>' ?></b>
             <b><?= 'Количество комментариев: ' . htmlspecialchars($info['comments_count'] ?? 'Нет комментариев') . '</br>' ?></b>
             <b><?= 'Количество тем: ' . htmlspecialchars($info['threads_count'] ?? 'Нет тем') . '</br>' ?></b>
+            <b><?= 'Количество реакций: ' . ($reactions['react_count']) . '</br>' ?></b>
         </p>
         <div>
             <?= 'О себе: ' . '</br>' . '</br>' . nl2br(htmlspecialchars($info['about']) . '</br>') ?>

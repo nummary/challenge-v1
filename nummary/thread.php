@@ -163,7 +163,12 @@ if (isset($_SESSION['uid'])) {
             <?php foreach ($comments as $index => $comment): ?>
                 <div style="border: 1px solid #ccc; padding: 10px; margin-bottom: 10px;">
                     <p>
-                        <b><?= htmlspecialchars($index + 1 . ' --- ' . $comment['cid'] . ' --- ' . $comment['commenter_name']) ?></b> 
+                        <b>
+                            <?= htmlspecialchars($index + 1 . ' --- ' . $comment['cid'] . ' --- ') ?>
+                            <a href="profile.php?id=<?= $comment['commenter_name'] ?>">
+                                <?= htmlspecialchars($comment['commenter_name'])?>
+                            </a>
+                        </b>
                         <small>(<?= $comment['created_dt'] ?>)</small>
                     </p>
                     <div>
@@ -172,8 +177,10 @@ if (isset($_SESSION['uid'])) {
 
                     <div>
                         <?php
+                        // 1. Список всех 7 допустимых реакций
                         $all_votes = ['127827','128514','127876','128169','129505','128077','128078'];
 
+                        // 2. Забираем количество голосов из БД в виде ассоциативного массива [ vote => total ]
                         $reactions_stmt = $pdo->prepare("
                             SELECT `vote`, COUNT(*) AS `total`
                             FROM `reactions`
@@ -183,6 +190,7 @@ if (isset($_SESSION['uid'])) {
                         $reactions_stmt->execute(['cid' => $comment['cid']]);
                         $counts = $reactions_stmt->fetchAll(PDO::FETCH_KEY_PAIR);
 
+                        // 3. Выводим ВСЕ 7 кнопок по очереди
                         foreach ($all_votes as $vote_code) {
                             $total = isset($counts[$vote_code]) ? $counts[$vote_code] : 0;
                             

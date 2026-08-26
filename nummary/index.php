@@ -15,7 +15,7 @@ session_start();
 
     <?php if (isset($_SESSION['uid'])): ?>
         
-        <p>Привет, <b><?= htmlspecialchars($_SESSION['username']) ?></b>!</p>
+        <p>Привет, <b><a href="profile.php?id=<?= $_SESSION['username'] ?>"><?= htmlspecialchars($_SESSION['username']) ?></a></b>!</p>
         <?php
         
         require_once "db.php";
