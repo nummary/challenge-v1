@@ -1,0 +1,99 @@
+@import url('https://fonts.googleapis.com/css2?family=Cousine:ital,wght@0,400;0,700;1,400;1,700&family=Rubik:ital,wght@0,300..900;1,300..900&display=swap');
+
+* {
+	margin: 0;
+	padding: 0;
+}
+
+body {
+  font-family: "Cousine", sans-serif;
+  font-weight: 400;
+  font-style: normal;
+  color: #d6e6ff;
+}
+
+a {
+	text-decoration: none;
+	color: #d6e6ff;
+	border-bottom: 2px solid transparent;
+}
+
+a:hover {
+  border-bottom-color: #d6e6ff; /* цвет линии при наведении */
+}
+
+img {
+	max-width: 100%;
+}
+
+.wrapper {
+  background: #000D24;
+  width: 100%;
+}
+
+.container {
+	width: 1200px;
+	margin: 0 auto;
+}
+
+.container.hello {
+	text-align: center;
+	font-size: 15px;
+	padding-top: 30px;
+	padding-bottom: 30px;
+}
+
+table {
+	width: 100%;
+	overflow: hidden;
+	border-spacing: 0;
+	border-collapse: separate;
+	font-family: sans-serif;
+	border-radius: 10px;
+	padding: 20px 0;
+}
+tr {
+	background-color: #18284F;
+}
+th {
+  background-color: #33589E;
+  color: #d6e6ff;
+  padding: 10px 15px;
+  font-weight: bold;
+  text-align: left;
+}
+td {
+	padding: 10px 15px;
+	color: #d6e6ff;
+}
+
+
+
+header {
+	padding: 15px 0;
+}
+
+header .logo {
+	text-transform: uppercase;
+	font-size: 29px;
+	font-weight: 800;
+}
+
+header nav {
+	float: right;
+	width: 50%;
+}
+
+header nav ul {
+	list-style: none;
+	display: flex;
+	justify-content: space-between;
+}
+
+header nav ul li {
+	display: inline-block;
+}
+
+header nav ul li a {
+	color: #d6e6ff;
+}
