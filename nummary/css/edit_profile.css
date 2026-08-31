@@ -1,0 +1,172 @@
+/* ==========================================================================
+   Стили для страницы редактирования профиля (edit_profile.php)
+   ========================================================================== */
+
+/* Ограничиваем общую ширину контента страницы */
+.edit-page-container {
+    max-width: 900px !important;
+    margin: 30px auto 50px auto;
+}
+
+/* Заголовок страницы */
+.edit-title-block {
+    margin-bottom: 25px;
+}
+
+.edit-title-block h1 {
+    font-size: 26px;
+    color: #fff;
+    margin-bottom: 8px;
+    font-weight: 700;
+}
+
+.breadcrumbs {
+    font-size: 14px;
+    color: var(--text-muted);
+}
+
+.breadcrumbs a {
+    color: var(--text-muted);
+    border-bottom: none !important;
+}
+
+.breadcrumbs a:hover {
+    color: #fff;
+}
+
+/* Двухколоночная карточка формы редактирования */
+.edit-box {
+    background-color: var(--bg-card);
+    border-radius: 10px;
+    border: 1px solid rgba(107, 156, 255, 0.1);
+    padding: 35px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+    display: flex;
+    gap: 35px;
+}
+
+/* Левая часть формы: Текущий аватар */
+.edit-avatar-zone {
+    width: 180px;
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.edit-avatar-title {
+    font-size: 12px;
+    color: var(--text-muted);
+    margin-bottom: 10px;
+    text-transform: uppercase;
+    font-weight: bold;
+    letter-spacing: 0.5px;
+}
+
+.edit-preview-box {
+    width: 180px;
+    height: 180px;
+    background-color: #5c6b73;
+    border-radius: 8px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #fff;
+    overflow: hidden;
+    border: 1px solid rgba(107, 156, 255, 0.15);
+}
+
+.edit-preview-box img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* Правая часть формы: Поля ввода */
+.edit-fields-zone {
+    flex-grow: 1;
+}
+
+.edit-fields-zone h2 {
+    font-size: 13px;
+    color: var(--text-muted);
+    margin-bottom: 10px;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* Поля ввода и текстовая область */
+.edit-input {
+    width: 100%;
+    background-color: var(--bg-main);
+    border: 1px solid rgba(107, 156, 255, 0.2);
+    border-radius: 6px;
+    padding: 12px 16px;
+    color: var(--text-main);
+    font-family: inherit;
+    font-size: 15px;
+    outline: none;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    margin-bottom: 22px;
+}
+
+.edit-textarea {
+    width: 100%;
+    height: 150px;
+    background-color: var(--bg-main);
+    border: 1px solid rgba(107, 156, 255, 0.2);
+    border-radius: 6px;
+    padding: 14px 16px;
+    color: var(--text-main);
+    font-family: inherit;
+    font-size: 15px;
+    line-height: 1.6;
+    outline: none;
+    resize: vertical;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    margin-bottom: 22px;
+}
+
+.edit-input:focus,
+.edit-textarea:focus {
+    border-color: var(--color-primary);
+    box-shadow: 0 0 10px rgba(107, 156, 255, 0.15);
+}
+
+/* Специфические настройки для инпута файлов и даты */
+.edit-fields-zone input[type="file"] {
+    color: var(--text-muted);
+    font-size: 13px;
+    cursor: pointer;
+    margin-bottom: 22px;
+}
+
+.edit-fields-zone input[type="date"]::-webkit-calendar-picker-indicator {
+    filter: invert(0.8) sepia(1) saturate(5) hue-rotate(190deg);
+    cursor: pointer;
+}
+
+/* Эстетичная кнопка сохранения изменений */
+.btn-save-profile {
+    background-color: var(--color-accent);
+    color: #fff;
+    border: none;
+    padding: 12px 30px;
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: bold;
+    border-radius: 6px;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(41, 121, 255, 0.2);
+    transition: background-color 0.2s ease, transform 0.1s ease, box-shadow 0.2s ease;
+}
+
+.btn-save-profile:hover {
+    background-color: var(--color-accent-hover);
+    box-shadow: 0 6px 16px rgba(41, 121, 255, 0.3);
+}
+
+.btn-save-profile:active {
+    transform: scale(0.98);
+}

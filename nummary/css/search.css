@@ -1,0 +1,44 @@
+/* ==========================================================================
+   Стили для страницы результатов поиска (search.php)
+   ========================================================================== */
+
+.search-wrapper-page {
+    margin-top: 20px;
+}
+
+.search-title-block {
+    margin-bottom: 25px;
+}
+
+.search-title-block h1 {
+    font-size: 24px;
+    color: #fff;
+    margin-bottom: 5px;
+}
+
+.search-subtitle {
+    font-size: 14px;
+    color: var(--text-muted);
+}
+
+/* Оформление превью найденного текста */
+.search-result-thread-link b {
+    font-size: 16px;
+    color: var(--color-primary);
+    transition: color 0.2s ease;
+}
+
+.search-result-thread-link:hover b {
+    color: #fff;
+}
+
+.search-text-preview {
+    font-size: 13px;
+    color: #a4b3cf;
+    margin-top: 6px;
+    line-height: 1.5;
+    background-color: rgba(0, 0, 0, 0.15);
+    padding: 8px 12px;
+    border-radius: 4px;
+    border-left: 2px solid var(--color-primary);
+}

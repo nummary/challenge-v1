@@ -1,0 +1,265 @@
+/* ==========================================================================
+   Стили для отображения тем, сообщений и реакций (thread.php) по макету
+   ========================================================================== */
+
+/* Блок заголовка темы и навигации */
+.thread-title-block {
+    margin-top: 25px;
+    margin-bottom: 20px;
+}
+
+.thread-title-block h1 {
+    font-size: 26px;
+    color: #fff;
+    margin-bottom: 5px;
+}
+
+.breadcrumbs {
+    font-size: 14px;
+    color: var(--text-muted);
+}
+
+.breadcrumbs a {
+    color: var(--text-muted);
+}
+
+.breadcrumbs a:hover {
+    color: #fff;
+}
+
+/* Панель модератора */
+.mod-panel {
+    background: #1c1417; 
+    border: 1px solid #5c2027; 
+    padding: 12px 20px; 
+    margin-bottom: 20px;
+    border-radius: 8px;
+    font-size: 14px;
+}
+
+.mod-panel a {
+    color: #ff6b76;
+    margin-left: 10px;
+    font-weight: bold;
+}
+
+.mod-panel a:hover {
+    color: #fff;
+}
+
+/* Верхняя панель управления */
+.thread-control-panel {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.btn-back {
+    background-color: #5c6b73;
+    color: #fff;
+    border: none;
+    padding: 8px 18px;
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: bold;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.btn-back:hover {
+    background-color: var(--color-accent);
+}
+
+/* ДВУХКОЛОНОЧНЫЙ БЛОК СООБЩЕНИЯ ИЗ МАКЕТА */
+.comment-block {
+    background-color: var(--bg-card);
+    border-radius: 10px;
+    border: 1px solid rgba(107, 156, 255, 0.1);
+    margin-bottom: 20px;
+    display: flex;
+    padding: 20px;
+    gap: 25px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+/* Левая колонка: Блок автора */
+.comment-author-zone {
+    width: 180px;
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: rgba(0, 0, 0, 0.2);
+    padding: 15px;
+    border-radius: 8px;
+    border: 1px solid rgba(107, 156, 255, 0.05);
+}
+
+.author-avatar-box {
+    width: 130px;
+    height: 130px;
+    background-color: #5c6b73;
+    border-radius: 6px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #fff;
+    font-size: 14px;
+    margin-bottom: 15px;
+    overflow: hidden;
+}
+
+.author-avatar-box img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.author-username-btn {
+    display: block;
+    width: 100%;
+    text-align: center;
+    background-color: #5c6b73;
+    color: #fff !important;
+    padding: 6px 10px;
+    border-radius: 6px;
+    font-weight: bold;
+    font-size: 14px;
+    margin-bottom: 8px;
+    border: none !important;
+}
+.author-username-btn:hover {
+    background-color: var(--color-accent);
+}
+
+.author-role-badge {
+    display: block;
+    width: 100%;
+    text-align: center;
+    background-color: rgba(255, 255, 255, 0.1);
+    color: var(--text-main);
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-size: 13px;
+}
+
+/* Правая колонка: Контент сообщения */
+.comment-content-zone {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.comment-top-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 13px;
+    color: var(--text-muted);
+    margin-bottom: 15px;
+    border-bottom: 1px solid rgba(107, 156, 255, 0.05);
+    padding-bottom: 8px;
+}
+
+.comment-top-meta .msg-number {
+    font-weight: bold;
+    color: var(--text-main);
+}
+
+.comment-text-content {
+    font-size: 15px;
+    line-height: 1.6;
+    color: var(--text-main);
+    margin-bottom: 20px;
+}
+
+/* Контейнер и плитки реакций (в правом нижнем углу) */
+.reactions-container {
+    display: flex;
+    justify-content: flex-end;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: auto;
+}
+
+.reaction-badge {
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(107, 156, 255, 0.15);
+    padding: 4px 8px;
+    border-radius: 6px;
+    font-size: 13px;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.reaction-badge a {
+    border-bottom: none !important;
+}
+
+.reaction-count {
+    color: var(--text-muted);
+    font-weight: bold;
+}
+
+/* Форма нового ответа */
+.reply-box {
+    background-color: var(--bg-card);
+    border-radius: 10px;
+    border: 1px solid rgba(107, 156, 255, 0.1);
+    padding: 25px;
+    margin-top: 30px;
+    margin-bottom: 40px;
+}
+
+.reply-box h3 {
+    margin-bottom: 15px;
+    font-size: 18px;
+    color: #fff;
+}
+
+.reply-textarea {
+    width: 100%;
+    height: 140px;
+    background-color: var(--bg-main);
+    border: 1px solid rgba(107, 156, 255, 0.2);
+    border-radius: 8px;
+    padding: 15px;
+    color: var(--text-main);
+    font-family: inherit;
+    font-size: 14px;
+    outline: none;
+    resize: vertical;
+    transition: border-color 0.2s;
+    margin-bottom: 15px;
+}
+
+.reply-textarea:focus {
+    border-color: var(--color-primary);
+}
+
+.file-input-wrapper {
+    margin-bottom: 20px;
+    font-size: 13px;
+    color: var(--text-muted);
+}
+
+.btn-reply {
+    background-color: var(--color-accent);
+    color: #fff;
+    border: none;
+    padding: 10px 25px;
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: bold;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.btn-reply:hover {
+    background-color: var(--color-accent-hover);
+}

@@ -1,99 +1,452 @@
-@import url('https://fonts.googleapis.com/css2?family=Cousine:ital,wght@0,400;0,700;1,400;1,700&family=Rubik:ital,wght@0,300..900;1,300..900&display=swap');
+@import url('https://googleapis.com');
+
+/* ==========================================================================
+   1. Универсальная строгая синяя палитра (CSS-переменные)
+   ========================================================================== */
+:root {
+    --text-main: #d6e6ff;       /* Основной светло-голубой текст */
+    --text-muted: #8da1c4;      /* Приглушенный текст для дат и счетчиков */
+    --bg-main: #000d24;        /* Твой основной глубокий фон */
+    --bg-card: #0a1936;        /* Твой цвет плашек и карточек */
+    --bg-table-header: #142c5c;/* Чуть более светлый синий для шапок таблиц */
+    --color-primary: #6b9cff;   /* Твой красивый светло-синий для обычных ссылок */
+    --color-accent: #2979ff;    /* Насыщенный синий для кнопок и фокуса */
+    --color-accent-hover: #1565c0; /* Темно-синий для ховеров */
+}
 
 * {
-	margin: 0;
-	padding: 0;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
 }
 
 body {
-  font-family: "Cousine", sans-serif;
-  font-weight: 400;
-  font-style: normal;
-  color: #d6e6ff;
+    font-family: "Cousine", sans-serif;
+    font-weight: 400;
+    font-style: normal;
+    color: var(--text-main);
+    background: var(--bg-main);
 }
 
 a {
-	text-decoration: none;
-	color: #d6e6ff;
-	border-bottom: 2px solid transparent;
+    text-decoration: none;
+    color: var(--color-primary);
+    border-bottom: 2px solid transparent;
+    transition: all 0.2s ease;
 }
 
 a:hover {
-  border-bottom-color: #d6e6ff; /* цвет линии при наведении */
+    color: #fff;
+    border-bottom-color: #fff;
 }
 
 img {
-	max-width: 100%;
+    max-width: 100%;
 }
 
 .wrapper {
-  background: #000D24;
-  width: 100%;
+    width: 100%;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
 }
 
 .container {
-	width: 1200px;
-	margin: 0 auto;
+    width: 1200px;
+    margin: 0 auto;
 }
 
-.container.hello {
-	text-align: center;
-	font-size: 15px;
-	padding-top: 30px;
-	padding-bottom: 30px;
+/* ==========================================================================
+   2. Шапка сайта (Фиксированная / Строгий синий стиль)
+   ========================================================================== */
+header.sticky-header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1000;
+    background: var(--bg-main);
+    border-bottom: 2px solid var(--bg-card);
+    padding: 12px 0;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
 }
 
-table {
-	width: 100%;
-	overflow: hidden;
-	border-spacing: 0;
-	border-collapse: separate;
-	font-family: sans-serif;
-	border-radius: 10px;
-	padding: 20px 0;
-}
-tr {
-	background-color: #18284F;
-}
-th {
-  background-color: #33589E;
-  color: #d6e6ff;
-  padding: 10px 15px;
-  font-weight: bold;
-  text-align: left;
-}
-td {
-	padding: 10px 15px;
-	color: #d6e6ff;
+.header-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
+.header-spacer {
+    height: 95px; 
+}
 
-
-header {
-	padding: 15px 0;
+.logo-link {
+    border-bottom: none !important;
 }
 
 header .logo {
-	text-transform: uppercase;
-	font-size: 29px;
-	font-weight: 800;
+    text-transform: uppercase;
+    font-size: 29px;
+    font-weight: 800;
+    display: inline-block;
+    color: #fff;
+    letter-spacing: 1px;
 }
 
 header nav {
-	float: right;
-	width: 50%;
+    display: flex;
+    justify-content: center;
+    flex-grow: 1;
 }
 
 header nav ul {
-	list-style: none;
-	display: flex;
-	justify-content: space-between;
-}
-
-header nav ul li {
-	display: inline-block;
+    list-style: none;
+    display: flex;
+    gap: 15px;
 }
 
 header nav ul li a {
-	color: #d6e6ff;
+    color: var(--text-main);
+    background-color: var(--bg-card);
+    padding: 8px 20px;
+    border-radius: 6px;
+    border: 1px solid rgba(107, 156, 255, 0.15);
+}
+
+header nav ul li a:hover {
+    background-color: var(--color-accent);
+    color: #fff;
+    border-bottom-color: transparent;
+    border-color: var(--color-accent);
+}
+
+/* Панель пользователя */
+.header-right {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 8px;
+}
+
+.user-panel {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background-color: var(--bg-card);
+    padding: 6px 14px;
+    border-radius: 20px;
+    border: 1px solid rgba(107, 156, 255, 0.2);
+}
+
+.username-link {
+    border-bottom: none !important;
+}
+
+.username-display {
+    font-weight: bold;
+    color: var(--text-main);
+    transition: color 0.2s ease;
+}
+
+.username-link:hover .username-display {
+    color: #fff;
+}
+
+.header-icon-btn {
+    font-size: 18px;
+    padding: 4px 8px;
+    border-radius: 4px;
+    border-bottom: none !important;
+    transition: background-color 0.2s ease;
+}
+
+.header-icon-btn:hover {
+    background-color: var(--bg-main);
+}
+
+.inline-logout-form {
+    display: inline;
+}
+
+.logout-door-btn {
+    background: none !important;
+    border: none !important;
+    padding: 0 !important;
+    font-size: 18px;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+}
+
+.logout-door-btn:hover {
+    transform: scale(1.15);
+}
+
+/* Строка поиска */
+.search-wrapper {
+    width: 100%;
+    max-width: 220px;
+}
+
+.search-bar {
+    width: 100%;
+    background: var(--bg-main);
+    border: 1px solid rgba(107, 156, 255, 0.3);
+    padding: 5px 12px;
+    border-radius: 20px;
+    color: var(--text-main);
+    font-family: inherit;
+    font-size: 13px;
+    outline: none;
+}
+
+.search-bar:focus {
+    border-color: var(--color-primary);
+    background: var(--bg-card);
+}
+
+/* ==========================================================================
+   3. Приветственная секция
+   ========================================================================== */
+.container.hello {
+    text-align: center;
+    font-size: 15px;
+    padding-top: 30px;
+    padding-bottom: 30px;
+}
+
+.container.hello h1 {
+    font-size: 26px;
+    margin-bottom: 10px;
+    font-weight: 700;
+    color: #fff;
+}
+
+.container.hello p {
+    color: var(--text-muted);
+}
+
+/* ==========================================================================
+   4. Таблицы разделов форума
+   ========================================================================== */
+.forum-section-block {
+    margin-bottom: 25px;
+    border-radius: 10px;
+    overflow: hidden;
+    border: 1px solid rgba(107, 156, 255, 0.05);
+}
+
+table {
+    width: 100%;
+    border-spacing: 0;
+    border-collapse: collapse;
+    font-family: sans-serif;
+}
+
+tr {
+    background-color: var(--bg-card);
+    border-bottom: 1px solid var(--bg-main);
+    transition: background-color 0.2s ease;
+}
+
+tr:hover {
+    background-color: #0e2247;
+}
+
+th {
+    background-color: var(--bg-table-header);
+    color: #fff;
+    padding: 14px 20px;
+    font-weight: bold;
+    text-align: left;
+    border-bottom: 2px solid var(--bg-main);
+}
+
+td {
+    padding: 15px 20px;
+    color: var(--text-main);
+}
+
+.stats-cell {
+    text-align: right;
+    width: 120px;
+    font-size: 13px;
+    color: var(--text-muted);
+}
+
+.stats-cell span {
+    display: block;
+    color: var(--text-main);
+    font-weight: bold;
+    font-size: 14px;
+}
+
+/* ==========================================================================
+   5. Компактная таблица последних сообщений
+   ========================================================================== */
+.compact-table table {
+    font-size: 13px;
+}
+
+.compact-table th {
+    padding: 10px 15px;
+    font-size: 12px;
+    background-color: #1a356b;
+}
+
+.compact-table td {
+    padding: 10px 15px;
+}
+
+.compact-table .time-cell,
+.compact-table .author-cell {
+    width: 120px;
+    color: var(--text-muted);
+}
+
+/* ==========================================================================
+   6. Сводка в самом низу (Футер)
+   ========================================================================== */
+.footer {
+    background-color: #030814;
+    border-top: 2px solid var(--bg-card);
+    padding: 24px 0;
+    margin-top: auto;
+    font-size: 12px;
+    color: var(--text-muted);
+}
+
+.footer-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+}
+
+.footer-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.footer-btn {
+    background: var(--bg-card);
+    border: 1px solid rgba(107, 156, 255, 0.2);
+    color: var(--text-main);
+    padding: 4px 8px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+.footer-btn:hover {
+    background: var(--color-accent);
+    color: #fff;
+}
+
+.footer-badge {
+    background: var(--bg-card);
+    padding: 4px 10px;
+    border-radius: 4px;
+    color: var(--text-main);
+    font-weight: bold;
+    border: 1px solid rgba(107, 156, 255, 0.2);
+}
+
+.social-icons {
+    display: flex;
+    gap: 10px;
+}
+
+.social-icons a {
+    font-size: 16px;
+    border: none !important;
+}
+
+.footer-center {
+    flex: 1;
+    max-width: 50%;
+    text-align: center;
+    line-height: 1.5;
+}
+
+.footer-center p {
+    margin-bottom: 4px;
+}
+
+.footer-center p:last-child {
+    margin-bottom: 0;
+}
+
+.footer-right {
+    display: flex;
+    gap: 15px;
+}
+
+.footer-right a {
+    color: var(--text-muted);
+    font-size: 12px;
+}
+
+.footer-right a:hover {
+    color: #fff;
+}
+
+/* Отключаем нижнее подчеркивание для юзернейма в шапке */
+.username-link {
+    border-bottom: none !important;
+}
+.username-link:hover .username-display {
+    color: #fff;
+}
+
+
+/* Блок пагинации и кнопки */
+.section-actions-right {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.pagination {
+    display: flex;
+    gap: 5px;
+}
+
+.pagination-item {
+    background-color: var(--bg-card);
+    border: 1px solid rgba(107, 156, 255, 0.15);
+    color: var(--text-main);
+    padding: 8px 12px;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: bold;
+    min-width: 35px;
+    text-align: center;
+}
+
+.pagination-item.active {
+    background-color: var(--bg-table-header);
+    border-color: var(--color-primary);
+}
+
+.pagination-item:hover:not(.active) {
+    background-color: var(--color-accent);
+    color: #fff;
+    border-color: var(--color-accent);
+}
+
+/* Строки-заголовки внутри таблицы (Закрепленные / Обычные) */
+.table-subheader {
+    background-color: #1c335e !important;
+    font-size: 14px;
+    font-weight: bold;
+    color: #fff;
+}
+.table-subheader td {
+    padding: 10px 20px !important;
+}
+
+/* Мелкие правки под текст в макете */
+.comment-count-text {
+    color: var(--text-muted);
+    font-size: 13px;
 }
