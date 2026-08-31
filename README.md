@@ -13,7 +13,7 @@
 01 сентября 2026 12:00 AM
 
 <!--COUNTDOWN_START-->
--1 days 13 hours left
+0 days 6 hours left
 <!--COUNTDOWN_END-->
 
 ## Ставка
