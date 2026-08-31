@@ -1,6 +1,6 @@
 from datetime import datetime
 
-deadline = datetime(2026, 8, 31, 0, 0, 0)
+deadline = datetime(2026, 9, 1, 0, 0, 0)
 now = datetime.utcnow()
 
 delta = deadline - now
