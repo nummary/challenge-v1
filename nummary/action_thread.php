@@ -4,7 +4,7 @@ require_once "db.php";
 
 if (isset($_SESSION['uid'])) {
 
-    if (!in_array($_SESSION['role'], ['mod', 'admin'])) {
+    if (!in_array($_SESSION['role'], ['moderator', 'admin'])) {
         die("Доступ запрещен!");
     }
 
@@ -14,7 +14,7 @@ if (isset($_SESSION['uid'])) {
     if ($action === 'delete') {
         $stmt = $pdo->prepare("DELETE FROM threads WHERE `threads`.`tid` = :id");
         $stmt->execute(['id' => $tid]);
-        header("Location: " . $_SERVER['HTTP_REFERER']);
+        header("Location: index.php");
         exit;
     }
 

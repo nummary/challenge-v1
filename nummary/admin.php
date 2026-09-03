@@ -44,7 +44,7 @@ if (isset($_GET['action']) && $_GET['action'] === 'approve' && isset($_GET['req_
     if ($request_data) {
         $ins_user = $pdo->prepare("
             INSERT INTO `users` (`uid`, `username`, `email`, `pass`, `role`, `dob`, `created_date`) 
-            VALUES (NULL, :user, :email, :pass, 'member', :dob, CURRENT_TIMESTAMP)
+            VALUES (NULL, :user, :email, :pass, 'user', :dob, CURRENT_TIMESTAMP)
         ");
         $ins_user->execute([
             'user' => $request_data['username'],
@@ -119,7 +119,46 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
-$users_list = $pdo->query("SELECT `uid`, `username`, `email`, `role` FROM `users` ORDER BY `uid` DESC LIMIT 10")->fetchAll(PDO::FETCH_ASSOC);
+// --- БЛОК 1: Обработка изменения роли (POST) ---
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['change_role'])) {
+    $target_uid = (int)$_POST['target_uid'];
+    $new_role = $_POST['new_role'];
+    $allowed_roles = ['user', 'moderator', 'admin'];
+
+    if ($target_uid > 0 && in_array($new_role, $allowed_roles)) {
+        if ($target_uid === (int)$_SESSION['uid'] && $new_role !== 'admin') {
+            $error = "Вы не можете понизить в роли самого себя!";
+        } else {
+            $update_role = $pdo->prepare("UPDATE `users` SET `role` = :role WHERE `uid` = :uid");
+            $update_role->execute(['role' => $new_role, 'uid' => $target_uid]);
+            $message = "Роль пользователя успешно обновлена!";
+        }
+    } else {
+        $error = "Некорректные данные для смены роли!";
+    }
+}
+
+// --- БЛОК 2: Получение списка пользователей (с учетом поиска) ---
+// Проверяем поиск как в GET (когда нажали кнопку поиска), так и в POST (когда поменяли роль внутри поиска)
+$search_query = '';
+if (isset($_GET['user_search'])) {
+    $search_query = trim($_GET['user_search']);
+} elseif (isset($_POST['user_search_hidden'])) {
+    $search_query = trim($_POST['user_search_hidden']);
+}
+
+if (!empty($search_query)) {
+    // Если мы искали пользователя, выводим результаты поиска
+    $search_stmt = $pdo->prepare("SELECT `uid`, `username`, `email`, `role` FROM `users` WHERE `username` LIKE :search ORDER BY `uid` DESC");
+    $search_stmt->execute(['search' => "%$search_query%"]);
+    $users_list = $search_stmt->fetchAll(PDO::FETCH_ASSOC);
+} else {
+    // Если поиска нет, выводим последние 10, как обычно
+    $users_list = $pdo->query("SELECT `uid`, `username`, `email`, `role` FROM `users` ORDER BY `uid` DESC LIMIT 10")->fetchAll(PDO::FETCH_ASSOC);
+}
+
+
+
 $requests_list = $pdo->query("SELECT `id`, `username`, `email`, `dob` FROM `registration_requests` ORDER BY `id` ASC")->fetchAll(PDO::FETCH_ASSOC);
 
 $main_sections = $pdo->query("SELECT `sid`, `name` FROM `sections` WHERE `parent_id` IS NULL ORDER BY `sid` ASC")->fetchAll(PDO::FETCH_ASSOC);
@@ -250,8 +289,8 @@ $all_sub_sections = $pdo->query("SELECT s1.`sid`, s1.`name`, s2.`name` AS `paren
                                 <input type="password" name="password" class="admin-input" placeholder="••••••••" required>
                                 <label class="admin-label">Группа / Роль</label>
                                 <select name="role" class="admin-input">
-                                    <option value="member">Пользователь</option>
-                                    <option value="mod">Модератор</option>
+                                    <option value="user">Пользователь</option>
+                                    <option value="moderatorerator">Модератор</option>
                                     <option value="admin">Администратор</option>
                                 </select>
                                 <button type="submit" name="create_user" class="btn-admin-submit">Зарегистрировать</button>
@@ -260,6 +299,17 @@ $all_sub_sections = $pdo->query("SELECT s1.`sid`, s1.`name`, s2.`name` AS `paren
 
                         <div class="admin-card">
                             <h2>Последние участники</h2>
+                            
+                            <!-- Форма поиска пользователя -->
+                            <form action="admin.php" method="GET" style="margin-bottom: 15px; display: flex; gap: 10px;">
+                                <!-- Передаем скрытый параметр, чтобы оставаться на вкладке пользователей в некоторых системах -->
+                                <input type="text" name="user_search" class="admin-input" placeholder="Введите логин пользователя..." value="<?= htmlspecialchars($search_query) ?>" style="margin: 0;">
+                                <button type="submit" class="btn-admin-submit" style="width: auto; margin: 0; padding: 0 15px;">Найти</button>
+                                <?php if (!empty($search_query)): ?>
+                                    <a href="admin.php" class="footer-btn" style="background: #222; border-color: #444; padding: 8px 12px; border-radius: 4px; font-size: 13px; text-decoration: none; color: #fff;">Сбросить</a>
+                                <?php endif; ?>
+                            </form>
+
                             <div class="admin-table-wrapper">
                                 <table class="admin-table">
                                     <thead>
@@ -270,13 +320,34 @@ $all_sub_sections = $pdo->query("SELECT s1.`sid`, s1.`name`, s2.`name` AS `paren
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <?php foreach($users_list as $u): ?>
+                                        <?php if (empty($users_list)): ?>
                                             <tr>
-                                                <td>#<?= $u['uid'] ?></td>
-                                                <td><b><a href="profile.php?id=<?= urlencode($u['username']) ?>"><?= htmlspecialchars($u['username']) ?></a></b></td>
-                                                <td><span class="role-badge-small"><?= $u['role'] ?></span></td>
+                                                <td colspan="3" style="text-align: center; color: var(--text-muted); padding: 20px;">Пользователи не найдены.</td>
                                             </tr>
-                                        <?php endforeach; ?>
+                                        <?php else: ?>
+                                            <?php foreach($users_list as $u): ?>
+                                                <tr>
+                                                    <td>#<?= $u['uid'] ?></td>
+                                                    <td><b><a href="profile.php?id=<?= urlencode($u['username']) ?>"><?= htmlspecialchars($u['username']) ?></a></b></td>
+                                                    <td>
+                                                        <!-- Форма быстрой смены роли -->
+                                                        <form action="admin.php" method="POST" style="margin: 0; display: inline-block;">
+                                                            <input type="hidden" name="target_uid" value="<?= $u['uid'] ?>">
+                                                            <input type="hidden" name="change_role" value="1">
+                                                            
+                                                            <!-- Передаем текущий поисковый запрос, чтобы страница не сбрасывалась -->
+                                                            <input type="hidden" name="user_search_hidden" value="<?= htmlspecialchars($search_query) ?>">
+                                                            
+                                                            <select name="new_role" class="admin-input" style="padding: 2px 6px; font-size: 12px; width: auto; margin: 0; height: auto;" onchange="this.form.submit()">
+                                                                <option value="user" <?= $u['role'] === 'user' ? 'selected' : '' ?>>Пользователь</option>
+                                                                <option value="moderator" <?= $u['role'] === 'moderator' ? 'selected' : '' ?>>Модератор</option>
+                                                                <option value="admin" <?= $u['role'] === 'admin' ? 'selected' : '' ?>>Администратор</option>
+                                                            </select>
+                                                        </form>
+                                                    </td>
+                                                </tr>
+                                            <?php endforeach; ?>
+                                        <?php endif; ?>
                                     </tbody>
                                 </table>
                             </div>
@@ -389,21 +460,29 @@ $all_sub_sections = $pdo->query("SELECT s1.`sid`, s1.`name`, s2.`name` AS `paren
     </div>
 
     <script>
-    function openAdminTab(evt, tabId) {
-        var i, tabcontent, tablinks;
-        tabcontent = document.getElementsByClassName("admin-tab-content");
-        for (i = 0; i < tabcontent.length; i++) {
-            tabcontent[i].classList.remove("active");
+        function openAdminTab(evt, tabId) {
+            var i, tabcontent, tablinks;
+            tabcontent = document.getElementsByClassName("admin-tab-content");
+            for (i = 0; i < tabcontent.length; i++) {
+                tabcontent[i].classList.remove("active");
+            }
+            tablinks = document.getElementsByClassName("sidebar-link");
+            for (i = 0; i < tablinks.length; i++) {
+                tablinks[i].classList.remove("active");
+            }
+            document.getElementById(tabId).classList.add("active");
+            if (evt) {
+                evt.currentTarget.classList.add("active");
+            }
         }
-        tablinks = document.getElementsByClassName("sidebar-link");
-        for (i = 0; i < tablinks.length; i++) {
-            tablinks[i].classList.remove("active");
-        }
-        document.getElementById(tabId).classList.add("active");
-        if (evt) {
-            evt.currentTarget.classList.add("active");
-        }
-    }
+        document.addEventListener("DOMContentLoaded", function() {
+            <?php if (isset($_POST['change_role']) || isset($_GET['user_search'])): ?>
+                var userBtn = document.querySelector(".sidebar-link[onclick*='adm-users']");
+                if (userBtn) {
+                    openAdminTab({ currentTarget: userBtn }, 'adm-users');
+                }
+            <?php endif; ?>
+        });
     </script>
 </body>
 </html>

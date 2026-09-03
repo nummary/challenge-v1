@@ -226,8 +226,7 @@ if (isset($_SESSION['uid'])) {
         <footer class="footer">
             <div class="container footer-container">
                 <div class="footer-left">
-                    <button class="footer-btn">⤢</button>
-                    <span class="footer-badge">Samp-Rp</span>
+                    <span class="footer-badge">AVANTURA</span>
                     <div class="social-icons">
                         <a href="#" class="soc-vk">🌐</a>
                         <a href="#" class="soc-tg">✈️</a>
