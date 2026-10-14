@@ -6,7 +6,7 @@
 :root {
     --text-main: #d6e6ff;       /* Основной светло-голубой текст */
     --text-muted: #8da1c4;      /* Приглушенный текст для дат и счетчиков */
-    --bg-main: #000d24;        /* Твой основной глубокий фон */
+    --bg-main: url("/uploads/bgimage.jpg");        /* Твой основной глубокий фон */
     --bg-card: #0a1936;        /* Твой цвет плашек и карточек */
     --bg-table-header: #142c5c;/* Чуть более светлый синий для шапок таблиц */
     --color-primary: #6b9cff;   /* Твой красивый светло-синий для обычных ссылок */
@@ -25,7 +25,7 @@ body {
     font-weight: 400;
     font-style: normal;
     color: var(--text-main);
-    background: var(--bg-main);
+    background: url("../uploads/bgimage.jpg");
 }
 
 a {
